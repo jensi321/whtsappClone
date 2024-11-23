@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '../Header'
 import ChannelsList from './ChannelsList'
-import DownloadMsg from '../Chat/DownloadMsg'
+import ChannelMsgHistory from './ChannelMsgHistory'
 
 const Channels = () => {
   return (
@@ -11,7 +11,8 @@ const Channels = () => {
             <div className="flex relative whatsapp bg-[#f7f8fa] shadow-custom" >
                 <Header/>
                 <ChannelsList/>
-                <DownloadMsg/>
+                {/* <DownloadMsg/> */}
+                <ChannelMsgHistory/>
             </div>
         </div>
     </>

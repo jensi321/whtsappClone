@@ -1,20 +1,46 @@
 import { Tabs } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import AllChatList from './AllChatList'
 import UnreadChat from './UnreadChat'
 import GroupsChat from './GroupsChat'
 import AddFavorites from './AddFavorites'
 import { Link } from 'react-router-dom'
+import NewChat from './NewChat'
+import ChatListDotsModel from '../Models/ChatListDotsModel'
 
 const ChatList = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isNewChatListOpen, setIsNewChatListOpen] = useState(false);
+    const menuRef = useRef(null);
 
-    const handleOpen = () => {
-        setIsOpen(!isOpen)
-    }
+    const closeNewChatList = () => {
+        setIsNewChatListOpen(false);
+    };
+    const openNewChatList = () => {
+        setIsNewChatListOpen(true);
+    };
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+          
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     return (
         <>
-            <div className="chatlist">
+            <div className="chatlist bg-[white]">
                 <header>
                     <div className="h-[59px] color-[#3b4a54] pr-[20px] pl-[25px] box-border flex items-center bg-[#fff]">
                         <div className="w-full flex items-center justify-center">
@@ -25,14 +51,15 @@ const ChatList = () => {
                                 <div className="flex items-center">
                                     <span className='flex items-center  justify-center'>
                                         <div className="relative w-[40px] h-[40px]">
-                                            <div className="flex items-center p-[8px]">
+                                            <Link className="flex items-center p-[8px]" onClick={openNewChatList}>
                                                 <span>
                                                     <img className='w-full h-full' src="assets/Images/ChatPluse.svg" alt="" />
                                                 </span>
-                                            </div>
+                                            </Link>
                                         </div>
-                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={handleOpen}>
-                                            <div className={`flex items-center p-[8px] bg-white ${isOpen && 'bg-[#0b141a1a]'}`}>
+                                        
+                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={toggleMenu} ref={menuRef}>
+                                            <div className={`flex items-center p-[8px] bg-white ${isMenuOpen && 'bg-[#0b141a1a]'}`}>
                                                 <span>
                                                     <img className='w-full h-full' src="assets/Images/Dots.svg" alt="" />
                                                 </span>
@@ -40,29 +67,8 @@ const ChatList = () => {
 
                                         </Link>
                                         {
-                                            isOpen &&
-                                            <span>
-                                                <div className="absolute block z-[10000] scale-100 opacity-100 top-[52px] right-[30px]  max-w-[340px] py-[9px] bg-[#fff] rounded-[3px] shadow-shadow1">
-                                                    <ul>
-                                                        <li>
-                                                            <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>New group</Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Starred messages</Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Select chats</Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Log out</Link>
-                                                        </li>
-                                                        <hr className='border-t border-solid border-[#e9edef] mx-[1px] my-[4px]' />
-                                                        <li>
-                                                            <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center  px-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Get WhatsApp for Windows</Link>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </span>
+                                            isMenuOpen &&
+                                            <ChatListDotsModel/>
                                         }
 
                                     </span>
@@ -84,7 +90,7 @@ const ChatList = () => {
                         </div>
                     </div>
                 </div>
-
+              
                 <Tabs
                     defaultActiveKey="1"
                     className='msglist overflow-hidden'
@@ -111,7 +117,9 @@ const ChatList = () => {
                         },
                     ]}
                 />
+                  
             </div>
+            {isNewChatListOpen && <NewChat close={closeNewChatList}/>}
         </>
     )
 }

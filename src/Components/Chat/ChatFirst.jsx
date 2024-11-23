@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../Header'
-import DownloadMsg from './DownloadMsg'
+// import DownloadMsg from './DownloadMsg'
 import ChatList from './ChatList'
 import ChatHistory from './ChatHistory'
 

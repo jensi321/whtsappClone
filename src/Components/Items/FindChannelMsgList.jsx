@@ -10,8 +10,8 @@ const FindChannelMsgList = () => {
                         <div className="item z-[4] h-[72px] " key={index}>
                             <div className="h-[72px] shrink flex flex-row justify-start grow ">
                                 <div className="flex items-center px-[16px] flex-row ">
-                                    <div className="w-[49px] h-[49px] border border-solid border-[#e9edef] rounded-[50%] ">
-                                        <img src="assets/Images/whatsapp.svg" className='w-full' s alt="" />
+                                    <div className="w-[49px] h-[49px] border border-solid border-[#e9edef] overflow-hidden rounded-[50%] ">
+                                        <img src={i.image} className='w-full' s alt="" />
                                     </div>
 
                                 </div>
@@ -23,11 +23,11 @@ const FindChannelMsgList = () => {
                                         </span>
                                     </div>
                                     <div className="text-ellipsis">
-                                        <span className='text-[#54656f] text-[.875rem] leading-[1.4286]'>{i.follower} followers</span>
+                                        <span className='text-[#54656f] text-[.875rem] leading-[1.4286]'>{i.subscribers} followers</span>
                                     </div>
                                 </div>
                                 <div className="py-[8px] px-[16px] min-w-[48px] border-b border-[#e9edef] justify-center flex-col flex">
-                                    <button className='border border-[#e9edef] rounded-[1000px] '>
+                                    <button className='border border-[#e9edef] rounded-[1000px] hover:shadow-shadow1 '>
                                         <div className="py-[10px] px-[16px] flex justify-center items-center flex-row ">
                                             <div className="leading-[1.2] text-[teal] text-[.875rem]">Follow</div>
                                         </div>

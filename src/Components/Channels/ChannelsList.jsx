@@ -1,17 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ChannelMsgItems from '../Items/ChannelMsgItems';
 import FindChannelMsgList from '../Items/FindChannelMsgList';
 
 const ChannelsList = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef(null);
 
-    const handleOpen = () => {
-        setIsOpen(!isOpen)
-    }
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+          
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     return (
         <>
-            <div className="chatlist">
+            <div className="chatlist bg-[white]">
                 <header>
                     <div className="h-[59px] color-[#3b4a54] pr-[20px] pl-[25px] box-border flex items-center bg-[#fff]">
                         <div className="w-full flex items-center justify-center">
@@ -22,8 +38,8 @@ const ChannelsList = () => {
                                 <div className="flex items-center">
                                     <span className='flex items-center  justify-center'>
 
-                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={handleOpen}>
-                                            <div className={`flex items-center p-[8px] bg-white ${isOpen && 'bg-[#0b141a1a]'}`}>
+                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={toggleMenu} ref={menuRef}>
+                                            <div className={`flex items-center p-[8px] bg-white ${isMenuOpen && 'bg-[#0b141a1a]'}`}>
                                                 <span>
                                                     <img className='w-full h-full' src="assets/Images/plus.svg" alt="" />
                                                 </span>
@@ -31,14 +47,14 @@ const ChannelsList = () => {
 
                                         </Link>
                                         {
-                                            isOpen &&
-                                            <span>
+                                            isMenuOpen &&
+                                            <span >
                                                 <div className="absolute block z-[10000] scale-100 opacity-100 top-[52px] right-[30px]  max-w-[340px] py-[9px] bg-[#fff] rounded-[3px] shadow-shadow1">
                                                     <ul>
-                                                        <li>
+                                                        <li className='hover:bg-[#f5f6f6]'>
                                                             <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Create Channels</Link>
                                                         </li>
-                                                        <li>
+                                                        <li className='hover:bg-[#f5f6f6]'>
                                                             <Link className='relative overflow-hidden text-ellipsis	nowrap flex items-center pr-[58px] pl-[24px] text-[14.5px] text-[#3b4a54] h-[40px] hover:bg-[#f5f6f6]'>Find Channels</Link>
                                                         </li>
 
@@ -76,6 +92,12 @@ const ChannelsList = () => {
                             </div>
                         </div>
                         <FindChannelMsgList/>
+                        <div className="p-[16px] flex items-center justify-center ">
+                        <button className='border border-solid py-[10px] border-transparent leading-[1.1429] px-[24px] font-[500] text-[white] rounded-[24px] inline-block relative text-[.875rem] bg-[#008069]'>
+                                            <div className="flex items-center justify-center flex-row">
+                                                <div className="grow shrink flex-nowrap justify-center gap-[8px] flex items-center flex-row font-[500]">Discover more</div>
+                                            </div>
+                                        </button>                        </div>
                     </div>
                 </div>
 

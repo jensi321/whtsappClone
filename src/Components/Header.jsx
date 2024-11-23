@@ -15,7 +15,7 @@ const Header = () => {
                                     <div className="shrink grow h-full">
                                         <NavLink to={'/chat'}>
                                             {({ isActive }) => (
-                                                <div className={`w-[40px] h-[40px] flex items-center justify-center mt-[10px] rounded-[50%] ${isActive ? 'bg-active' : ''}`}>
+                                                <div title='Chats' className={`w-[40px] h-[40px] flex items-center justify-center mt-[10px] rounded-[50%] ${isActive ? 'bg-active' : ''}`}>
                                                     <div className="flex items-center justify-center p-[8px]">
                                                         <Badge  count={5} style={{
                                                             backgroundColor: '#25d366',
@@ -107,7 +107,7 @@ const Header = () => {
                                         <NavLink to={'/profile'} className={({ isActive }) => `w-[40px] h-[40px] mt-[10px] flex items-center justify-center ${isActive ? 'active' : ''}`}>
                                             <div className="flex items-center p-[8px]">
                                                 <div className="shrink w-[32px] h-[32px] ">
-                                                    <img src="assets/Images/Single.svg" className='w-full h-full rounded-[50%]' alt="" />
+                                                    <img src="assets/Images/user.jpg" className='w-full h-full rounded-[50%]' alt="" />
                                                 </div>
                                             </div>
                                         </NavLink>

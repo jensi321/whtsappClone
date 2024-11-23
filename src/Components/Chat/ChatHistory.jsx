@@ -1,17 +1,57 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { GoTriangleDown } from 'react-icons/go'
 import { Link } from 'react-router-dom'
+import VideocallModel from '../Models/VideocallModel';
+import ChatFooterModel from '../Models/ChatFooterModel';
+import { Footericons } from '../data';
+import ChatDotsModal from '../Models/ChatDotsModal';
 
 const ChatHistory = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDotsMenu, setIsDotsMenu] = useState(false);
+    const [videoCall, setVideoCall] = useState(false);
+
+    // Create refs for the menus
+    const menuRef = useRef(null);
+    const dotsMenuRef = useRef(null);
+    const videoRef = useRef(null);
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    const toggleDotsMenu = () => {
+        setIsDotsMenu(!isDotsMenu);
+    };
+    const toggleVideoCall = () => {
+        setVideoCall(!videoCall);
+    };
+
+
+    // Close menus when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpen(false);
+            }
+            if (dotsMenuRef.current && !dotsMenuRef.current.contains(event.target)) {
+                setIsDotsMenu(false);
+            }
+            if (videoRef.current && !videoRef.current.contains(event.target)) {
+                setVideoCall(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
     return (
         <>
             <div className=" chat-history h-full border-l border-solid border-[#d1d7db] w-full z-[100] grow relative">
                 <div className="flex flex-col h-full bg-[#efeae2] ">
-                    <div className="w-full h-full top-0 left-0 absolute bg-img"></div>
+                    <div className="w-full h-full top-0 left-0 absolute bg-img  opacity-[0.4]"></div>
                     {/* Header */}
                     <header className='relative z-[1000] border-box flex items-center w-full h-[59px] px-[16px] py-[10px] bg-[#f0f2f5]'>
                         <div className="-mt-[1px] pr-[15px]">
@@ -34,30 +74,34 @@ const ChatHistory = () => {
                         </div>
                         <div className="ml-[20px] ">
                             <div className="flex items-center">
-                                <div className="border h-full pb-[3px] pt-[5px] leading-[1] px-[10px] relative border-solid border-[#d1d7db] rounded-[100px]">
-                                    <button className=''>
+                                <div className={` h-full pb-[3px] pt-[5px] leading-[1] px-[10px] relative rounded-[100px] ${videoCall && 'bg-[#0b141a1a]'}`}>
+                                    <Link className='' onClick={toggleVideoCall} ref={videoRef}>
                                         <div className="flex justify-center items-center text-[#54656f80]">
                                             <span className='mr-[6px]'>
                                                 <img src="assets/Images/video-call.svg" alt="" />
                                             </span>
-                                            <span className=''><GoTriangleDown />
-                                            </span>
+                                            <span className=''><GoTriangleDown /></span>
                                         </div>
-                                    </button>
+                                    </Link>
+
                                 </div>
-                                <div className="pl-10px rounded-[50%]">
+                                <div className="pl-[10px] rounded-[50%]">
                                     <div className="flex-items-center p-[8px]">
                                         <span>
                                             <img src="assets/Images/search.svg" alt="" />
                                         </span>
                                     </div>
                                 </div>
-                                <div className="pl-10px rounded-[50%]">
-                                    <div className="flex-items-center p-[8px]">
+                                <div className="pl-[10px] ">
+                                    <Link className={`flex items-center p-[8px] rounded-[50%] overflow-hidden ${isDotsMenu && 'bg-[#0b141a1a]'}`} onClick={toggleDotsMenu} ref={dotsMenuRef}>
                                         <span>
                                             <img src="assets/Images/dots.svg" alt="" />
                                         </span>
-                                    </div>
+                                    </Link>
+                                    {isDotsMenu && (
+                                        <ChatDotsModal/>
+                                    )}
+
                                 </div>
                             </div>
 
@@ -67,7 +111,7 @@ const ChatHistory = () => {
                     {/* Chat */}
                     <div className="z-[1] relative oreder-2 flex-[1]">
                         <div className="">
-                            <div className="w-full overflow-x-[hidden] overflow-y-scroll h-full top-0 z-[100] flex-col border-box flex left absolute">
+                            <div className="w-full overflow-x-[hidden] overflow-y-auto h-full top-0 z-[100] flex-col border-box flex left absolute">
                                 <div className="flex-1 min-h-[12px]"></div>
                                 <div className="pb-[8px] flex-initial">
                                     <div className="flex flex-row justify-center mb-[12px] px-[9%]">
@@ -126,38 +170,23 @@ const ChatHistory = () => {
                                     <div className='flex items-center'>
                                         <div className="flex text-[#54656f] items-center justify-center border-box min-h-[52px]">
                                             <div className="w-[26px] flex mx-[8px] h-[42px]">
-                                                <button className='bottom-[8px] w-[26px] top-[9px] opacity-[0] rounded-[2px] absolute block'>
-                                                    <div className="m-[1px]">
-                                                        <span>
-                                                            <img src="assets/Images/Close-grey.svg" alt="" />
-                                                        </span>
-                                                    </div>
-                                                </button>
-                                                <button className='bottom-[8px] w-[26px] top-[9px] opacity-[1] rounded-[2px] absolute block'>
-                                                    <div className="m-[1px]">
-                                                        <span>
-                                                            <img src="assets/Images/Emoji.svg" alt="" />
-                                                        </span>
-                                                    </div>
-                                                </button>
-                                                <button className='bottom-[8px] w-[26px] top-[9px] opacity-[0] rounded-[2px] absolute block'>
-                                                    <div className="m-[1px]">
-                                                        <span>
-                                                            <img src="assets/Images/gif.svg" alt="" />
-                                                        </span>
-                                                    </div>
-                                                </button>
-                                                <button className='bottom-[8px] w-[26px] top-[9px] opacity-[0] rounded-[2px] absolute block'>
-                                                    <div className="m-[1px]">
-                                                        <span>
-                                                            <img src="assets/Images/stiker.svg" alt="" />
-                                                        </span>
-                                                    </div>
-                                                </button>
+                                                {Footericons.map((i, index) => {
+                                                    return (
+                                                        <button className={`bottom-[8px] w-[26px] top-[9px] opacity-[${i.opacity}] rounded-[2px] absolute block`} key={index}>
+                                                            <div className="m-[1px]">
+                                                                <span>
+                                                                    <img src={i.img} alt="" />
+                                                                </span>
+                                                            </div>
+                                                        </button>
+                                                    )
+                                                })}
+
+
                                             </div>
                                             <div className="flex items-center ">
-                                                <div className={`rounded-[50%]  relative ${isMenuOpen === true && 'bg-[#0b141a1a] rotate-[135deg]' } ease-in-out	duration-[.3s] transition-transform	`}>
-                                                    <Link className="p-[8px] flex items-center" onClick={toggleMenu}>
+                                                <div className={`rounded-[50%]  relative ${isMenuOpen === true && 'bg-[#0b141a1a] rotate-[135deg]'} ease-in-out	duration-[.3s] transition-transform	`}>
+                                                    <Link className="p-[8px] flex items-center" onClick={toggleMenu} ref={menuRef}>
                                                         <span>
                                                             <img src="assets/Images/plus.svg" alt="" />
                                                         </span>
@@ -165,86 +194,8 @@ const ChatHistory = () => {
 
                                                 </div>
                                                 {isMenuOpen && (
-                                                <span>
-                                                    <div className="bottom-[54px] scale-100	left-[38px] rounded-[16px] absolute z-[10000] max-w-[340px] py-[9px] bg-[white] shadow-shadow1">
-                                                        <ul>
-                                                            <div className="py-[3px]">
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Document.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Document</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Photos.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Photos & videos</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Camera.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Camera</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Contact.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Contact</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Poll.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Poll</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/New sticker.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>New sticker</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                                <div className="mx-[8px]">
-                                                                    <li className='hover:bg-[#f5f6f6]'>
-                                                                        <div className="h-[40px] flex items-center flex-row justify-start ml-[8px] mr-[32px] ">
-                                                                            <span className='min-w-[20px] mr-[12px]'>
-                                                                                <img src="assets/Images/Event.svg" alt="" />
-                                                                            </span>
-                                                                            <span className='text-[#3b4a54] overflow-hidden text-ellipsis leading-[21px]'>Event</span>
-                                                                        </div>
-                                                                    </li>
-                                                                </div>
-                                                            </div>
-
-                                                        </ul>
-                                                    </div>
-                                                </span>
-                                            )}
+                                                    <ChatFooterModel />
+                                                )}
                                             </div>
 
                                         </div>
@@ -252,11 +203,13 @@ const ChatHistory = () => {
                                             <div className="my-[5px] border w-full border-[white] border-solid min-h-[20px] px-[12px] mx-[8px] bg-white rounded-[8px] flex text-[.9375rem] leading-[20px] py-[9px]">
                                                 <input type="text" className='w-full outline-none' placeholder='Type a message' />
                                             </div>
-                                            <div className="min-w-[40px] pt-[5px] w-[40px] justify-center border-box flex items-center">
-                                                <button className="w-[40px] h-[40px] flex items-center justify-center">
-                                                    <span>
-                                                        <img src="assets/Images/MicroPhone.svg" alt="" />
-                                                    </span>
+                                            <div className="w-[26px] flex mx-[8px] h-[42px]">
+                                                <button className='bottom-[8px] w-[26px] top-[9px]  rounded-[2px] absolute block'>
+                                                    <div className="m-[1px]">
+                                                        <span>
+                                                            <img src="assets/Images/Sendicon.svg" className='opacity-[.4]' alt="" />
+                                                        </span>
+                                                    </div>
                                                 </button>
                                             </div>
                                         </div>
@@ -267,6 +220,10 @@ const ChatHistory = () => {
                     </footer>
                 </div>
             </div>
+            {videoCall && (
+                <VideocallModel />
+            )}
+
         </>
     )
 }

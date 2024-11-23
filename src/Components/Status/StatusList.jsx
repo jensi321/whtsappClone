@@ -1,17 +1,58 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { HiOutlinePlusSm } from 'react-icons/hi';
 import { Link } from 'react-router-dom'
+import { statusList } from '../data';
 
 const StatusList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPlusMenuOpen, setIsPlusMenuOpen] = useState(false);
-
+  
+  // Create refs for the menus
+  const plusMenuRef = useRef(null);
+  const statusMenuRef = useRef(null);
 
   const handleOpen = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
+
   const handlePlusMenuToggle = () => {
     setIsPlusMenuOpen(!isPlusMenuOpen);
+  };
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (plusMenuRef.current && !plusMenuRef.current.contains(event.target)) {
+        setIsPlusMenuOpen(false);
+      }
+      if (statusMenuRef.current && !statusMenuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const recentStatuses = statusList.filter(status => !status.viewed);
+  const viewedStatuses = statusList.filter(status => status.viewed);
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    
+    const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+    let timeString = date.toLocaleTimeString([], options);
+    
+    if (date.toDateString() === now.toDateString()) {
+      return `Today at ${timeString}`;
+    } else if (date.toDateString() === new Date(now.setDate(now.getDate() - 1)).toDateString()) {
+      return `Yesterday at ${timeString}`;
+    } else {
+      return date.toLocaleDateString() + ` at ${timeString}`;
+    }
   };
   return (
     <>
@@ -25,14 +66,14 @@ const StatusList = () => {
               <div className="">
                 <div className="flex items-center">
                   <span className='flex items-center  justify-center'>
-                    <Link className="relative w-[40px] h-[40px]" onClick={handlePlusMenuToggle}>
+                    <Link className="relative w-[40px] h-[40px]" onClick={handlePlusMenuToggle} ref={plusMenuRef}>
                       <div className="flex items-center p-[8px]">
                         <span>
                           <img className='w-full h-full' src="assets/Images/plus.svg" alt="Plus" />
                         </span>
                       </div>
                     </Link>
-                    <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={handleOpen}>
+                    <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={handleOpen} ref={statusMenuRef}>
                       <div className={`flex items-center p-[8px] bg-white ${isOpen && 'bg-[#0b141a1a]'}`}>
                         <span>
                           <img className='w-full h-full' src="assets/Images/Dots.svg" alt="" />
@@ -106,226 +147,76 @@ const StatusList = () => {
                       <div className="z-[15] h-[72px] w-full ">
                         <div className="pb-[15px] pt-[30px] h-[72px] uppercase box-border pl-[32px] text-[#008069] text-[1rem]">Recent</div>
                       </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[teal]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
+
+                      {
+                       recentStatuses.map((i, index) => {
+                        return(
+                          <div className="z-[5] h-[72px] w-full " key={index}>
+                          <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
+                            <div className="flex">
+                              <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
+                                <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
+                                  <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[teal]" stroke-width="4"></circle>
+                                </svg>
+                                <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
+                                  <img src={i.profilePic} alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
+                            <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
+                              <div className="flex items-center w-full">
+                                <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
+                                  <span className='overflow-hidden text-ellipsis relative grow '>{i.name}</span>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
+                              <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
+                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">{formatTimestamp(i.timestamp)}</div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[teal]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[teal]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+  
+                        )
+                       })
+                      }
+                     
+                      {/* Viewed Status */}
                       <div className="z-[15] h-[72px] w-full ">
                         <div className="pb-[15px] pt-[30px] h-[72px] uppercase box-border pl-[32px] text-[#008069] text-[1rem]">Viewed</div>
                       </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
+                      
+                      {
+                       viewedStatuses.map((i, index) => {
+                        return(
+                          <div className="z-[5] h-[72px] w-full " key={index}>
+                          <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
+                            <div className="flex">
+                              <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
+                                <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
+                                  <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
+                                </svg>
+                                <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
+                                  <img src={i.profilePic} alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
+                            <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
+                              <div className="flex items-center w-full">
+                                <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
+                                  <span className='overflow-hidden text-ellipsis relative grow '>{i.name}</span>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
+                              <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
+                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">{formatTimestamp(i.timestamp)}</div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="z-[5] h-[72px] w-full ">
-                        <div className="flex flexx-row bg-wihte h-[72px] hover:bg-[#f5f6f6]">
-                          <div className="flex">
-                            <div className="my-[12px] pt-[2px] h-[40px] w-[40px] ml-[13px] mr-[15px]">
-                              <svg class="mt-[-4px] ml-[-4px] absolute" width="48" height="48" viewBox="0 0 104 104">
-                                <circle cx="52" cy="52" r="50" fill="none" stroke-linecap="round" class="stroke-[#bbbec4]" stroke-width="4"></circle>
-                              </svg>
-                              <div className="h-[40px] w-[40px] rounded-[50%] bg-[#cacaca] ">
-                                <img src="assets/Images/Single.svg" alt="" className='overflow-hidden h-[40px] w-[40px] rounded-[50%]' />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-center grow shrink pr-[15px] border-t border-solid border-[#e9edef]">
-                            <div className="flex items-center w-full">
-                              <div className="flex grow overflow-hidden text-[17px] text-[#111b21] text-left break-words">
-                                <span className='overflow-hidden text-ellipsis relative grow '>DSFdc vnncv</span>
-                              </div>
-                            </div>
-                            <div className="flex items-center min-h-[20px] mt-[2px] w-full text-[13px] leading-[20px] text-[#667781]">
-                              <div className="grow overflow-hidden text-[14px] leading-[20px] text-left text-ellipsis ">Today at 11:45 AM</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
+  
+                        )
+                       })
+                      }
+                     
                     </span>
                   </div>
                 </div>

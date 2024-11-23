@@ -22,7 +22,7 @@ input{
   z-index: 200;
   height: 100vh;
 }
-
+.newchat .newchat-inner,
 .chatlist{
   overflow: visible;
   height: 100%;
@@ -95,8 +95,8 @@ input{
 }
 
 
-.chat-items .text-content:not(:first-child),
-.channels-items .text-content:not(:first-child)
+.chat-items .item:not(:first-child) .text-content,
+.channels-items .item:not(:first-child) .text-content
 {
   border-top: 1px solid #e9edef;
 }
@@ -146,6 +146,10 @@ input{
 }
 
 
+.profile-image:hover .change-image{
+  display: flex;
+}
+
 @media screen and (min-height: 760px) and (min-width: 1095px) {
   .landing-header {
     margin-bottom: 66px !important;
@@ -153,7 +157,8 @@ input{
 }
 
 @media screen and (min-width: 1300px) {
-  .chatlist{
+  .chatlist,
+  .newchat .newchat-inner{
       flex: 0 0 30%;
       max-width: 30%;
   }
