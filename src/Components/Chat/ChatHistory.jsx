@@ -5,11 +5,13 @@ import VideocallModel from '../Models/VideocallModel';
 import ChatFooterModel from '../Models/ChatFooterModel';
 import { Footericons } from '../data';
 import ChatDotsModal from '../Models/ChatDotsModal';
+import SearchMsgModel from '../Models/SearchMsgModel';
 
 const ChatHistory = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDotsMenu, setIsDotsMenu] = useState(false);
     const [videoCall, setVideoCall] = useState(false);
+    const [search, setSearch] =useState(false);
 
     // Create refs for the menus
     const menuRef = useRef(null);
@@ -26,6 +28,10 @@ const ChatHistory = () => {
     const toggleVideoCall = () => {
         setVideoCall(!videoCall);
     };
+
+    const openSearch = () => {
+        setSearch(true);
+    }
 
 
     // Close menus when clicking outside
@@ -85,12 +91,12 @@ const ChatHistory = () => {
                                     </Link>
 
                                 </div>
-                                <div className="pl-[10px] rounded-[50%]">
-                                    <div className="flex-items-center p-[8px]">
+                                <div className="pl-[10px] ">
+                                    <Link className="flex items-center p-[8px] rounded-[50%] overflow-hidden hover:bg-[#0b141a1a]" onClick={openSearch}>
                                         <span>
                                             <img src="assets/Images/search.svg" alt="" />
                                         </span>
-                                    </div>
+                                    </Link>
                                 </div>
                                 <div className="pl-[10px] ">
                                     <Link className={`flex items-center p-[8px] rounded-[50%] overflow-hidden ${isDotsMenu && 'bg-[#0b141a1a]'}`} onClick={toggleDotsMenu} ref={dotsMenuRef}>
@@ -172,7 +178,7 @@ const ChatHistory = () => {
                                             <div className="w-[26px] flex mx-[8px] h-[42px]">
                                                 {Footericons.map((i, index) => {
                                                     return (
-                                                        <button className={`bottom-[8px] w-[26px] top-[9px] opacity-[${i.opacity}] rounded-[2px] absolute block`} key={index}>
+                                                        <button className={`bottom-[8px] w-[26px] top-[9px]  rounded-[2px] absolute ${i.class}`} key={index}>
                                                             <div className="m-[1px]">
                                                                 <span>
                                                                     <img src={i.img} alt="" />
@@ -220,6 +226,15 @@ const ChatHistory = () => {
                     </footer>
                 </div>
             </div>
+
+
+            {
+                search && (
+                    <SearchMsgModel search={search} close={() =>{setSearch(false)}}/>
+                )
+            }
+
+            
             {videoCall && (
                 <VideocallModel />
             )}

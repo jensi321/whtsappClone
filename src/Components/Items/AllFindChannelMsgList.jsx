@@ -1,13 +1,11 @@
 import React from 'react'
-import { FindChannelList } from '../data';
-const FindChannelMsgList = ({ channels }) => {
+import { FindChannelList } from '../data'
 
-    const firstFourChannels = FindChannelList.slice(0, 4);
-
-    return (
-        <>
-            {
-                firstFourChannels.map((i, index) => {
+const AllFindChannelMsgList = () => {
+  return (
+    <>
+               {
+                FindChannelList.map((i, index) => {
                     return (
                         <div className="item z-[4] h-[72px] " key={index}>
                             <div className="h-[72px] shrink flex flex-row justify-start grow ">
@@ -42,7 +40,7 @@ const FindChannelMsgList = ({ channels }) => {
 
             }
         </>
-    )
+  )
 }
 
-export default FindChannelMsgList
+export default AllFindChannelMsgList

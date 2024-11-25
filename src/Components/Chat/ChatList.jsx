@@ -1,17 +1,19 @@
 import { Tabs } from 'antd'
-import React, { useEffect, useRef, useState } from 'react'
-import AllChatList from './AllChatList'
-import UnreadChat from './UnreadChat'
-import GroupsChat from './GroupsChat'
-import AddFavorites from './AddFavorites'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import NewChat from './NewChat'
 import ChatListDotsModel from '../Models/ChatListDotsModel'
+import AllChatList from './ChatTab/AllChatList'
+import AddFavorites from './ChatTab/AddFavorites'
+import UnreadChat from './ChatTab/UnreadChat'
+import GroupsChat from './ChatTab/GroupsChat'
+import { Modal } from 'react-bootstrap'
+import NewGroups from './NewGroups'
 
 const ChatList = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNewChatListOpen, setIsNewChatListOpen] = useState(false);
-    const menuRef = useRef(null);
+    const [isNewGroup, setIsNewGroup] = useState(false);
 
     const closeNewChatList = () => {
         setIsNewChatListOpen(false);
@@ -20,24 +22,24 @@ const ChatList = () => {
         setIsNewChatListOpen(true);
     };
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+    const openMenu = () => {
+        setIsMenuOpen(true);
+    };
+    const closeMenu = () => {
+        setIsMenuOpen(false);
     };
 
-    // Close dropdown when clicking outside
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsMenuOpen(false);
-            }
-          
-        };
+    const openNewGroup = () => {
+        closeMenu();
+        setIsNewGroup(true);
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    };
+
+    const closeNewGroup = () => {
+        setIsNewGroup(false);
+    };
+
+
     return (
         <>
             <div className="chatlist bg-[white]">
@@ -57,19 +59,18 @@ const ChatList = () => {
                                                 </span>
                                             </Link>
                                         </div>
-                                        
-                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={toggleMenu} ref={menuRef}>
-                                            <div className={`flex items-center p-[8px] bg-white ${isMenuOpen && 'bg-[#0b141a1a]'}`}>
+
+                                        <Link className="relative rounded-[50%] ml-[10px] w-[40px] h-[40px] overflow-hidden" onClick={openMenu}>
+                                            <div className={`flex items-center p-[8px] ${isMenuOpen ? 'bg-[#0b141a1a]' : 'bg-white '}`}>
                                                 <span>
                                                     <img className='w-full h-full' src="assets/Images/Dots.svg" alt="" />
                                                 </span>
                                             </div>
 
                                         </Link>
-                                        {
-                                            isMenuOpen &&
-                                            <ChatListDotsModel/>
-                                        }
+                                        <Modal show={isMenuOpen} onHide={closeMenu}>
+                                            <ChatListDotsModel openNewGroup={openNewGroup}/>
+                                        </Modal>
 
                                     </span>
                                 </div>
@@ -90,7 +91,7 @@ const ChatList = () => {
                         </div>
                     </div>
                 </div>
-              
+
                 <Tabs
                     defaultActiveKey="1"
                     className='msglist overflow-hidden'
@@ -117,9 +118,12 @@ const ChatList = () => {
                         },
                     ]}
                 />
-                  
+
             </div>
-            {isNewChatListOpen && <NewChat close={closeNewChatList}/>}
+            {isNewChatListOpen && <NewChat close={closeNewChatList} />}
+            {
+                isNewGroup && <NewGroups close={closeNewGroup}/>
+            }
         </>
     )
 }

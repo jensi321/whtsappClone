@@ -1,5 +1,5 @@
 import React from 'react'
-import ChatMsgItems from '../Items/ChatMsgItems';
+import ChatMsgItems from '../../Items/ChatMsgItems'
 
 const AllChatList = () => {
     return (

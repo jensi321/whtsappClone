@@ -2,14 +2,23 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { userList } from '../data'
 import NewCommunities from '../Communities/NewCommunities';
+import NewGroups from './NewGroups';
 
 const NewChat = ({ close }) => {
     const [isNewComOpen, setIsNewComOpen] = useState(false);
-    const closeNewCom = () => {
-        setIsNewComOpen(false);
-    };
+    const [isNewGroupOpen, setIsNewGroupOpen] = useState(false);
+
+    const closeNewGroup = () => {
+        setIsNewGroupOpen(false);
+    }
+    const openNewGroup = () => {
+        setIsNewGroupOpen(true);
+    }
     const openNewCom = () => {
         setIsNewComOpen(true);
+    };
+    const closeNewCom = () => {
+        setIsNewComOpen(false);
     };
 
     const sortedUserList = userList.sort((a, b) => {
@@ -29,7 +38,7 @@ const NewChat = ({ close }) => {
             <div className="w-full h-full newchat overflow-hidden top-0 left-0 right-0 bottom-0 ml-[64px] flex absolute">
                 <div className="newchat-inner flex overflow-hidden box-border relative z-[300] w-full h-full">
                     <div className="overflow-hidden w-full h-full flex flex flex-col bg-[#fff] ">
-                        <header className='h-[64px] text-[#3b4a54] pr-[20px] pl-[20px] flex items-center bg-[#fff] '>
+                        <header className='min-h-[64px] text-[#3b4a54] pr-[20px] pl-[20px] flex items-center bg-[#fff] '>
                             <div className="w-full flex items-center text-[#111b21]">
                                 <div className="w-[54px]">
                                     <Link onClick={close}>
@@ -59,7 +68,7 @@ const NewChat = ({ close }) => {
                         <div className="overflow-x-hidden overflow-y-auto z-[100] flex-col relative grow opacity-[1] bg-[white] ">
                             <div className="">
                                 <div className="w-full box-border flex relative ">
-                                    <div className="min-h-[60px] w-full shrink-1 flex items-stretch flex-row jstify-start grow-1 hover:bg-[#f5f6f6]">
+                                    <Link className="min-h-[60px] w-full shrink-1 flex items-stretch flex-row jstify-start grow-1 hover:bg-[#f5f6f6]" onClick={openNewGroup}>
                                         <div className="py-[8px] min-w-[40px] flex items-center pl-[13px] flex-col pr-[16px] ">
                                             <div className="w-[48px] h-[48px] overflow-hidden rounded-[100%] bg-[#00a884] flex justify-center items-center flex-row">
                                                 <span className='w-[60%] h-[60%] flex items-center justify-center'>
@@ -72,7 +81,7 @@ const NewChat = ({ close }) => {
                                                 <div className="text-[#111b21] leading-[1.2941] text-[1.0625rem]">New group</div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </div>
 
@@ -167,6 +176,7 @@ const NewChat = ({ close }) => {
             </div>
 
             {isNewComOpen && <NewCommunities close={closeNewCom} />}
+            {isNewGroupOpen && <NewGroups close={closeNewGroup} />}
         </>
     )
 }

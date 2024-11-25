@@ -7,7 +7,7 @@ const NewCommunities = ({ close }) => {
             <div className="w-full h-full newchat overflow-hidden top-0 left-0 right-0 bottom-0 ml-[64px] flex absolute">
                 <div className="newchat-inner flex overflow-hidden box-border relative z-[300] w-full h-full">
                     <div className="overflow-hidden w-full h-full flex flex flex-col bg-[#fff] ">
-                        <header className='h-[64px] text-[#3b4a54] pr-[20px] pl-[20px] flex items-center bg-[#fff] '>
+                        <header className='min-h-[64px] text-[#3b4a54] pr-[20px] pl-[20px] flex items-center bg-[#fff] '>
                             <div className="w-full flex items-center text-[#111b21]">
                                 <div className="w-[54px]">
                                     <Link onClick={close}>

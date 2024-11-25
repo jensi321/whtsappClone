@@ -5,7 +5,7 @@ function ProfileList() {
     const [isOpen, setIsOpen] = useState(false);
     const [isNameEditable, setIsNameEditable] = useState(false);
     const [isAboutEditable, setIsAboutEditable] = useState(false);
-    const [name, setName] = useState('Lucas...');
+    const [name, setName] = useState('Lucas...🦋');
     const [about, setAbout] = useState('This is my about section.');
 
     const MenuRef = useRef(null);

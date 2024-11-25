@@ -1,14 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import NewCommunities from './NewCommunities';
 import CommunityListItems from '../Items/CommunityListItems';
+import CommunityViewAll from './CommunityViewAll';
 
 const CommunitiesList = () => {
     const [isNewComOpen, setIsNewComOpen] = useState(false);
+    const [selectedCommunity, setSelectedCommunity] = useState(null);
+
     const closeNewCom = () => {
         setIsNewComOpen(false);
     };
+
     const openNewCom = () => {
         setIsNewComOpen(true);
+    };
+
+    const handleCommunitySelect = (communityData) => {
+        setSelectedCommunity(communityData);
+    };
+
+    const closeCommunityViewAll = () => {
+        setSelectedCommunity(null); // Clear the selected community when closing
     };
 
     return (
@@ -25,7 +37,7 @@ const CommunitiesList = () => {
                 </header>
                 <div className="overflow-x-hidden overflow-y-auto z-[100] flex-col flex relative grow opacity-[1]">
                     <div className="">
-                        <div className="h-[700px] relative  mt-[-1px] ">
+                        <div className="h-[700px] relative mt-[-1px] ">
                             <div className="z-[19] h-[52px] ">
                                 <div className="hover:bg-[#f5f6f6] relative flex flex-row h-[72px] bg-[white] " onClick={openNewCom}>
                                     <div className="flex">
@@ -43,21 +55,16 @@ const CommunitiesList = () => {
                                         </div>
                                     </div>
                                 </div>
-
-                           
-
-<CommunityListItems/>
-
+                                <CommunityListItems onCommunitySelect={handleCommunitySelect} />
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
             {isNewComOpen && <NewCommunities close={closeNewCom} />}
+            {selectedCommunity && <CommunityViewAll close={closeCommunityViewAll} community={selectedCommunity} />}
         </>
-    )
-}
+    );
+};
 
-export default CommunitiesList
+export default CommunitiesList;

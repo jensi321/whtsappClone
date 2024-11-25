@@ -89,7 +89,7 @@ const ChannelMsgHistory = () => {
                     <div className="z-[1] relative oreder-2 flex-[1]">
                         <div className="">
                             <div className="w-full overflow-x-[hidden] overflow-y-auto h-full top-0 z-[100] flex-col border-box flex left absolute">
-                                <div class="flex-1 min-h-[12px]"></div>
+                                <div className="flex-1 min-h-[12px]"></div>
                                 <div className="pb-[8px] flex-initial">
                                     <div className="flex flex-row justify-center mb-[12px] px-[9%]">
                                         <div className="mb-0 border-box inline-block flex-none max-w-[100%] pt-[5px] px-[12px] pb-[6px] text-[12.5px] leading-[21px] rounded-[7.5px] text-[#54656f] text-center bg-[#fffffff2] shadow-custom">

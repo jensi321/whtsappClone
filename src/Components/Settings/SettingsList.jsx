@@ -1,32 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react'
+import AccountList from './Account/AccountList'
+import PrivacyList from './PrivacyList'
+import ChatSettingList from './ChatSettingList'
+import NotificationList from './NotificationList'
+import KeyBordList from './KeyBordList'
+import HelpList from './HelpList'
 
 const SettingsList = () => {
+    const [account, setAccount] = useState(false)
+    const [privacy, setPrivacy] = useState(false)
+    const [chats, setChats] = useState(false)
+    const [notifications, setNotifications] = useState(false)
+    const [keyboard, setKeyboard] = useState(false)
+    const [help, setHelp] = useState(false)
+
     const items = [
         {
             img: 'assets/Images/Account.svg',
             name: 'Account',
+            action: () => setAccount(true)
         },
         {
             img: 'assets/Images/Privacy.svg',
             name: 'Privacy',
+            action: () => setPrivacy(true)
+
         },
         {
             img: 'assets/Images/ChatsSettings.svg',
             name: 'Chats',
+            action: () => setChats(true)
+
         },
         {
             img: 'assets/Images/NotificationSettings.svg',
             name: 'Notifications',
+            action: () => setNotifications(true)
+
         },
         {
             img: 'assets/Images/Keyboard.svg',
             name: 'Keyboard shortcuts',
+            action: () => setKeyboard(true)
+
         },
         {
             img: 'assets/Images/Help.svg',
             name: 'Help',
+            action: () => setHelp(true)
+
         },
     ]
+
+    const handleAccountClose = () => {
+        setAccount(false); 
+    };
+    const handlePrivacyClose = () => {
+        setPrivacy(false); 
+    };
+
+    const handleChatsClose = () =>{
+        setChats(false);
+    }
+    const handleNotificationsClose = () => {
+        setNotifications(false);
+        }
+        const handleKeyboardClose = () => {
+            setKeyboard(false);
+            }
+            const handleHelpClose = () => {
+                setHelp(false);
+                }
+
     return (
         <>
             <div className="chatlist bg-[white]">
@@ -80,7 +125,7 @@ const SettingsList = () => {
                                 {
                                     items.map((i, index) => {
                                         return (
-                                            <button className='w-full overflow-hidden flex grow hover:bg-[#f5f6f6]'>
+                                            <button className='w-full overflow-hidden flex grow hover:bg-[#f5f6f6]' key={index} onClick={i.action}>
                                                 <div className="w-full box-border">
                                                     <div className="min-h-[60px] shrink flex-nowrap box-border  flex items-stretch flex-row justify-start grow ">
                                                         <div className="py-[8px] min-w-[40px] flex-nowrap justify-center flex items-center px-[16px] flex-row">
@@ -121,6 +166,12 @@ const SettingsList = () => {
                 </div>
 
             </div>
+            {account && <AccountList close={handleAccountClose}/>}
+            {privacy && <PrivacyList close={handlePrivacyClose}/>}
+            {chats && <ChatSettingList close={handleChatsClose}/>}
+            {notifications && <NotificationList close={handleNotificationsClose}/>}
+            {keyboard && <KeyBordList close={handleKeyboardClose}/>}
+            {help && <HelpList close={handleHelpClose}/>}
         </>
     )
 }
